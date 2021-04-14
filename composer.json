@@ -1,0 +1,32 @@
+{
+  "name": "demo/demo",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "VLADIS",
+      "email": "email@example.com"
+    }
+  ],
+  "config": {
+    "process-timeout": 0,
+    "sort-packages": true
+  },
+  "require": {
+    "php": ">=7.4",
+    "psr/http-message": "^1.0",
+    "roave/security-advisories": "dev-master",
+    "zendframework/zend-diactoros": "^2.2",
+    "zendframework/zend-httphandlerrunner": "^1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/App/",
+      "Framework\\": "src/Framework/"
+    }
+  },
+  "scripts": {
+    "run-ser": "php -S localhost:8080 -t public public/index.php"
+  }
+}
