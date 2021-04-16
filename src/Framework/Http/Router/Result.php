@@ -6,8 +6,19 @@ namespace Framework\Http\Router;
 
 class Result
 {
+    /**
+     * @var
+     */
     private $name;
+
+    /**
+     * @var
+     */
     private $handler;
+
+    /**
+     * @var array
+     */
     private array $attributes;
 
     /**

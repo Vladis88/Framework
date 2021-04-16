@@ -10,6 +10,9 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class AuraRouterAdapter implements Router
 {
+    /**
+     * @var RouterContainer
+     */
     private RouterContainer $aura;
 
     /**
@@ -22,6 +25,10 @@ class AuraRouterAdapter implements Router
     }
 
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return Result
+     */
     public function match(ServerRequestInterface $request): Result
     {
         $matcher = $this->aura->getMatcher();
@@ -31,6 +38,11 @@ class AuraRouterAdapter implements Router
         throw new RequestNotMatchedException($request);
     }
 
+    /**
+     * @param $name
+     * @param array $params
+     * @return string
+     */
     public function generate($name, array $params = []): string
     {
         $generate = $this->aura->getGenerator();
