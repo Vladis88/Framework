@@ -18,9 +18,8 @@ use Framework\Http\Middleware\DispatchMiddleware;
 use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
-use Framework\Http\Router\Exception\RequestNotMatchedException;
 
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
@@ -29,7 +28,7 @@ require "vendor/autoload.php";
 //Init
 $params = [
     'debug' => true,
-    'users' => ['admin' => 'admin'],
+    'users' => ['user' => 'user'],
 ];
 
 $aura = new RouterContainer();
@@ -58,7 +57,7 @@ $app->pipe(new DispatchMiddleware($resolver));
 
 //Running
 $request = ServerRequestFactory::fromGlobals();
-$response = $app->run($request);
+$response = $app->run($request, new Response());
 
 //Sending
 $emitter = new SapiEmitter();
