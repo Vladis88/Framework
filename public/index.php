@@ -14,6 +14,7 @@ use App\Http\Middleware\ProfilerMiddleware;
 use Aura\Router\RouterContainer;
 
 use Framework\Http\Application;
+use Framework\Http\Middleware\RouteMiddleware;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Exception\RequestNotMatchedException;
@@ -48,33 +49,14 @@ $router = new AuraRouterAdapter($aura);
 $resolver = new MiddlewareResolver();
 $app = new Application($resolver, new NotFoundHandler());
 
-
 $app->pipe(new ErrorHandlerMiddleware($params['debug']));
 $app->pipe(CredentialsMiddleware::class);
 $app->pipe(ProfilerMiddleware::class);
+$app->pipe(new RouteMiddleware($router, $resolver));
 
 //Running
 $request = ServerRequestFactory::fromGlobals();
-try {
-    $result = $router->match($request);
-    foreach ($result->getAttributes() as $attribute => $value) {
-        $request = $request->withAttribute($attribute, $value);
-    }
-    $handler = $result->getHandler();
-    $app->pipe($resolver->resolve($handler));
-} catch (RequestNotMatchedException $e) {
-}
-
-try {
-    $response = $app->run($request);
-} catch (\Throwable $e) {
-    $response = new JsonResponse([
-        'error' => 'Server error!',
-        'code' => $e->getCode(),
-        'message' => $e->getMessage(),
-    ], 500);
-}
-
+$response = $app->run($request);
 
 //Sending
 $emitter = new SapiEmitter();
