@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Framework\Http\Router\Exception;
+namespace Framework\Http\Pipeline;
 
 
 class UnknownMiddlewareTypeException extends \InvalidArgumentException

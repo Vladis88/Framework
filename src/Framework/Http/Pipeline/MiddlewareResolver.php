@@ -4,26 +4,27 @@
 namespace Framework\Http\Pipeline;
 
 
-use Framework\Http\Router\Exception\UnknownMiddlewareTypeException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Zend\Stratigility\MiddlewarePipe;
 
 class MiddlewareResolver
 {
     /**
      * @param $handler
+     * @param \Psr\Http\Message\ResponseInterface $responsePrototype
      * @return callable
      */
-    public function resolve($handler): callable
+    public function resolve($handler, ResponseInterface $responsePrototype): callable
     {
         if (\is_array($handler)) {
-            return $this->createPipe($handler);
+            return $this->createPipe($handler, $responsePrototype);
         }
 
         if (\is_string($handler)) {
             return function (ServerRequestInterface $request, ResponseInterface $response, callable $next) use ($handler) {
-                $middleware = $this->resolve(new $handler());
+                $middleware = $this->resolve(new $handler(), $response);
                 return $middleware($request, $response, $next);
             };
         }
@@ -51,11 +52,12 @@ class MiddlewareResolver
         return new UnknownMiddlewareTypeException($handler);
     }
 
-    private function createPipe(array $handlers): Pipeline
+    private function createPipe(array $handlers, ResponseInterface $responsePrototype): MiddlewarePipe
     {
-        $pipeline = new Pipeline();
+        $pipeline = new MiddlewarePipe();
+        $pipeline->setResponsePrototype($responsePrototype);
         foreach ($handlers as $handler) {
-            $pipeline->pipe($this->resolve($handler));
+            $pipeline->pipe($this->resolve($handler, $responsePrototype));
         }
         return $pipeline;
     }
