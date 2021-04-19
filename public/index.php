@@ -11,6 +11,7 @@ use App\Http\Middleware\ProfilerMiddleware;
 
 use Aura\Router\RouterContainer;
 
+use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Pipeline\Pipeline;
 use Framework\Http\Router\AuraRouterAdapter;
@@ -32,7 +33,6 @@ $routes = $aura->getMap();
 $routes->get('home', '/', HomeAction::class);
 
 $routes->get('cabinet', '/cabinet', [
-    ProfilerMiddleware::class,
     new BasicAuthMiddleware($params['users']),
     CabinetAction::class,
 ]);
@@ -43,6 +43,9 @@ $routes->get('blog_show', '/blog/{id}', ShowAction::class)->tokens(['id' => '\d+
 
 $router = new AuraRouterAdapter($aura);
 $resolver = new MiddlewareResolver();
+$app = new Application($resolver);
+
+$app->pipe(ProfilerMiddleware::class);
 
 //Running
 $request = ServerRequestFactory::fromGlobals();
@@ -51,17 +54,11 @@ try {
     foreach ($result->getAttributes() as $attribute => $value) {
         $request = $request->withAttribute($attribute, $value);
     }
-    $handlers = $result->getHandler();
-    $pipeline = new Pipeline();
-    foreach (is_array($handlers) ? $handlers : [$handlers] as $handler){
-        $pipeline->pipe($resolver->resolve($handler));
-    }
-    $response = $pipeline($request, new NotFoundHandler());
-
+    $handler = $result->getHandler();
+    $app->pipe($resolver->resolve($handler));
 } catch (RequestNotMatchedException $e) {
-    $handler = new NotFoundHandler();
-    $response = $handler();
 }
+$response = $app($request, new NotFoundHandler());
 
 //Postprocessing
 $response = $response->withHeader('X-Developer', 'VLAD');

@@ -7,11 +7,11 @@ use Zend\Diactoros\Response\JsonResponse;
 
 class ShowAction
 {
-    public function __invoke(ServerRequestInterface $request): JsonResponse
+    public function __invoke(ServerRequestInterface $request, callable $next)
     {
         $id = $request->getAttribute('id');
         if ($id > 3) {
-            return new JsonResponse(['error' => 'Undefined page'], 404);
+            return $next($request);
         }
         return new JsonResponse(['id' => $id, 'title' => 'Post #' . $id]);
     }
