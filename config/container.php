@@ -1,9 +1,11 @@
 <?php
 
-use Framework\Container\Container;
+use Zend\ServiceManager\ServiceManager;
 
-$container = new Container(require 'config/dependencies.php');
+$config = require 'config.php';
 
-$container->set('config', require 'config/parameters.php');
+$container = new ServiceManager($config['dependencies']);
+
+$container->setService('config', $config);
 
 return $container;

@@ -1,16 +1,13 @@
 <?php
 
-use Framework\Container\Container;
 use Framework\Http\Application;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\HttpHandlerRunner\Emitter\SapiEmitter;
 
 /**
- * @var Container $container
  * @var Application $app
  */
-
 require "vendor/autoload.php";
 
 $container = require 'config/container.php';
