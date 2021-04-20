@@ -1,11 +1,8 @@
 <?php
 
-
 namespace Framework\Http\Pipeline;
 
-
-use Framework\Container\Container;
-use Framework\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -13,7 +10,7 @@ use Zend\Stratigility\MiddlewarePipe;
 
 class MiddlewareResolver
 {
-    private Container $container;
+    private ContainerInterface $container;
 
     /**
      * MiddlewareResolver constructor.

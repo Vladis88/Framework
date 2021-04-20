@@ -3,6 +3,8 @@
 namespace Framework\Container;
 
 
+use Psr\Container\ContainerInterface;
+
 class Container implements ContainerInterface
 {
     private array $definitions;
@@ -35,7 +37,7 @@ class Container implements ContainerInterface
                             $arguments[] = [];
                         } else {
                             if (!$parameter->isDefaultValueAvailable()) {
-                                throw new NotFoundException('Unable to resolve "' . $parameter->getName() . '"" in service "' . $id . '"');
+                                throw new ServiceNotFoundException('Unable to resolve "' . $parameter->getName() . '"" in service "' . $id . '"');
                             }
                             $arguments[] = $parameter->getDefaultValue();
                         }
@@ -45,7 +47,7 @@ class Container implements ContainerInterface
                 $this->results[$id] = $reflection->newInstanceArgs($arguments);
                 return $this->results[$id];
             }
-            throw new NotFoundException("Undefined parameter\"" . $id . '"');
+            throw new ServiceNotFoundException("Undefined parameter\"" . $id . '"');
         }
 
         $definition = $this->definitions[$id];
