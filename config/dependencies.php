@@ -31,8 +31,8 @@ $container->set(ErrorHandlerMiddleware::class, function (Container $container) {
     return new ErrorHandlerMiddleware($container->get('config')['debug']);
 });
 
-$container->set(MiddlewareResolver::class, function () {
-    return new MiddlewareResolver();
+$container->set(MiddlewareResolver::class, function (Container $container) {
+    return new MiddlewareResolver($container);
 });
 
 $container->set(RouteMiddleware::class, function (Container $container) {
