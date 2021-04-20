@@ -3,9 +3,9 @@
 namespace Framework\Container;
 
 
-class Container
+class Container implements ContainerInterface
 {
-    private array $definitions = [];
+    private array $definitions;
     private array $results = [];
 
     /**
@@ -17,10 +17,6 @@ class Container
         $this->definitions = $definitions;
     }
 
-
-    /**
-     * @throws \ReflectionException
-     */
     public function get($id)
     {
         if (array_key_exists($id, $this->results)) {
@@ -39,7 +35,7 @@ class Container
                             $arguments[] = [];
                         } else {
                             if (!$parameter->isDefaultValueAvailable()) {
-                                throw new ServiceNotFoundException('Unable to resolve "' . $parameter->getName() . '"" in service "' . $id . '"');
+                                throw new NotFoundException('Unable to resolve "' . $parameter->getName() . '"" in service "' . $id . '"');
                             }
                             $arguments[] = $parameter->getDefaultValue();
                         }
@@ -49,7 +45,7 @@ class Container
                 $this->results[$id] = $reflection->newInstanceArgs($arguments);
                 return $this->results[$id];
             }
-            throw new ServiceNotFoundException("Undefined parameter\"" . $id . '"');
+            throw new NotFoundException("Undefined parameter\"" . $id . '"');
         }
 
         $definition = $this->definitions[$id];

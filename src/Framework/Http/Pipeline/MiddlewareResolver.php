@@ -5,6 +5,7 @@ namespace Framework\Http\Pipeline;
 
 
 use Framework\Container\Container;
+use Framework\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -16,9 +17,9 @@ class MiddlewareResolver
 
     /**
      * MiddlewareResolver constructor.
-     * @param \Framework\Container\Container $container
+     * @param ContainerInterface $container
      */
-    public function __construct(Container $container)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
     }
@@ -27,9 +28,9 @@ class MiddlewareResolver
     /**
      * @param $handler
      * @param \Psr\Http\Message\ResponseInterface $responsePrototype
-     * @return callable
+     * @return \Closure|\Framework\Http\Pipeline\UnknownMiddlewareTypeException|mixed|\Zend\Stratigility\MiddlewarePipe
      */
-    public function resolve($handler, ResponseInterface $responsePrototype): callable
+    public function resolve($handler, ResponseInterface $responsePrototype)
     {
         if (\is_array($handler)) {
             return $this->createPipe($handler, $responsePrototype);
