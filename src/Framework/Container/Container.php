@@ -8,6 +8,19 @@ class Container
     private array $definitions = [];
     private array $results = [];
 
+    /**
+     * Container constructor.
+     * @param array $definitions
+     */
+    public function __construct(array $definitions = [])
+    {
+        $this->definitions = $definitions;
+    }
+
+
+    /**
+     * @throws \ReflectionException
+     */
     public function get($id)
     {
         if (array_key_exists($id, $this->results)) {
@@ -16,7 +29,25 @@ class Container
 
         if (!array_key_exists($id, $this->definitions)) {
             if (class_exists($id)) {
-                return $this->results[$id] = new $id();
+                $reflection = new \ReflectionClass($id);
+                $arguments = [];
+                if (($constructor = $reflection->getConstructor()) !== null) {
+                    foreach ($constructor->getParameters() as $parameter) {
+                        if ($paramClass = $parameter->getClass()) {
+                            $arguments[] = $this->get($paramClass->getName());
+                        } elseif ($parameter->isArray()) {
+                            $arguments[] = [];
+                        } else {
+                            if (!$parameter->isDefaultValueAvailable()) {
+                                throw new ServiceNotFoundException('Unable to resolve "' . $parameter->getName() . '"" in service "' . $id . '"');
+                            }
+                            $arguments[] = $parameter->getDefaultValue();
+                        }
+                    }
+                }
+
+                $this->results[$id] = $reflection->newInstanceArgs($arguments);
+                return $this->results[$id];
             }
             throw new ServiceNotFoundException("Undefined parameter\"" . $id . '"');
         }
@@ -38,6 +69,11 @@ class Container
             unset($this->results[$id]);
         }
         $this->definitions[$id] = $value;
+    }
+
+    public function has($id): bool
+    {
+        return array_key_exists($id, $this->definitions) || class_exists($id);
     }
 
 }

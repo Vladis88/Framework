@@ -14,35 +14,25 @@ use Framework\Http\Router\Router;
 use Zend\Diactoros\Response;
 
 /** @var Container $container */
-$container->set(Application::class, function (Container $container) {
-    return new Application(
-        $container->get(MiddlewareResolver::class),
-        $container->get(Router::class),
-        new NotFoundHandler(),
-        new Response()
-    );
-});
-
-$container->set(BasicAuthMiddleware::class, function (Container $container) {
-    return new BasicAuthMiddleware($container->get('config')['users']);
-});
-
-$container->set(ErrorHandlerMiddleware::class, function (Container $container) {
-    return new ErrorHandlerMiddleware($container->get('config')['debug']);
-});
-
-$container->set(MiddlewareResolver::class, function (Container $container) {
-    return new MiddlewareResolver($container);
-});
-
-$container->set(RouteMiddleware::class, function (Container $container) {
-    return new RouteMiddleware($container->get(Router::class));
-});
-
-$container->set(DispatchMiddleware::class, function (Container $container) {
-    return new DispatchMiddleware($container->get(MiddlewareResolver::class));
-});
-
-$container->set(Router::class, function () {
-    return new AuraRouterAdapter(new RouterContainer());
-});
+return [
+    Application::class => function (Container $container) {
+        return new Application(
+            $container->get(MiddlewareResolver::class),
+            $container->get(Router::class),
+            new NotFoundHandler(),
+            new Response()
+        );
+    },
+    Router::class => function () {
+        return new AuraRouterAdapter(new RouterContainer());
+    },
+    MiddlewareResolver::class => function (Container $container) {
+        return new MiddlewareResolver($container);
+    },
+    BasicAuthMiddleware::class => function (Container $container) {
+        return new BasicAuthMiddleware($container->get('config')['users']);
+    },
+    ErrorHandlerMiddleware::class => function (Container $container) {
+        return new ErrorHandlerMiddleware($container->get('config')['debug']);
+    },
+];
