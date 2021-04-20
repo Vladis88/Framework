@@ -4,7 +4,7 @@ namespace App\Http\Action\Blog;
 
 use Zend\Diactoros\Response\JsonResponse;
 
-class BlogAction
+class IndexAction
 {
     public function __invoke(): JsonResponse
     {
