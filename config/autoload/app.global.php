@@ -8,6 +8,7 @@ use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
+use Framework\View\ViewRender;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -38,6 +39,9 @@ return [
             ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
                 return new ErrorHandlerMiddleware($container->get('config')['debug']);
             },
+            ViewRender::class => function(){
+                return new ViewRender('views');
+            }
         ],
     ],
 
