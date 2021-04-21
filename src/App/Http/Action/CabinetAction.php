@@ -3,15 +3,15 @@
 namespace App\Http\Action;
 
 use App\Http\Middleware\BasicAuthMiddleware;
-use Framework\View\ViewRender;
+use Framework\View\PhpViewRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class CabinetAction
 {
-    private ViewRender $template;
+    private PhpViewRender $template;
 
-    public function __construct(ViewRender $template)
+    public function __construct(PhpViewRender $template)
     {
         $this->template = $template;
     }

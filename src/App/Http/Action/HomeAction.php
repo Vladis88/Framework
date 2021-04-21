@@ -2,19 +2,19 @@
 
 namespace App\Http\Action;
 
-use Framework\View\ViewRender;
+use Framework\View\PhpViewRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class HomeAction
 {
-    private ViewRender $view;
+    private PhpViewRender $view;
 
     /**
      * HomeAction constructor.
-     * @param ViewRender $view
+     * @param PhpViewRender $view
      */
-    public function __construct(ViewRender $view)
+    public function __construct(PhpViewRender $view)
     {
         $this->view = $view;
     }

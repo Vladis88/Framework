@@ -2,14 +2,14 @@
 
 namespace App\Http\Action;
 
-use Framework\View\ViewRender;
+use Framework\View\PhpViewRender;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class AboutAction
 {
-    private ViewRender $template;
+    private PhpViewRender $template;
 
-    public function __construct(ViewRender $template)
+    public function __construct(PhpViewRender $template)
     {
         $this->template = $template;
     }

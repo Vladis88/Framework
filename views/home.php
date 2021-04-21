@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>Hello - App</title>
+    <title>Framework</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <style>
@@ -40,7 +40,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    Application
+                    Home
                 </a>
             </div>
             <div class="collapse navbar-collapse">
@@ -67,7 +67,7 @@
 <footer class="app-footer">
     <div class="container">
         <hr/>
-        <p>&copy; 2017 - My App.</p>
+        <p>&copy; 2021 - My App.</p>
     </div>
 </footer>
 
