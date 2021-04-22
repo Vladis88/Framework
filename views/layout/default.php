@@ -1,17 +1,33 @@
+<?php
+/** @var string $name */
+/** @var \Framework\View\PhpViewRender $this */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Framework</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title><?= $this->params['title'] ?? '' ?>-App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <style>
-        body { padding-top: 70px; }
-        h1 { margin-top: 0 }
-        .app { display: flex; min-height: 100vh; flex-direction: column; }
-        .app-content { flex: 1; }
-        .app-footer { padding-bottom: 1em; }
+        body {
+            padding-top: 70px;
+        }
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .app-content {
+            flex: 1;
+        }
+
+        .app-footer {
+            padding-bottom: 1em;
+        }
     </style>
 </head>
 <body class="app">
@@ -25,7 +41,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    Application
+                    Home
                 </a>
             </div>
             <div class="collapse navbar-collapse">
@@ -40,18 +56,14 @@
 
 <div class="app-content">
     <main class="container">
-        <ul class="breadcrumb">
-            <li><a href="/">Home</a></li>
-            <li class="active">About</li>
-        </ul>
-        <h1>About the site</h1>
+        <?= $content ?>
     </main>
 </div>
 
 <footer class="app-footer">
     <div class="container">
-        <hr />
-        <p>&copy; 2017 - My App.</p>
+        <hr/>
+        <p>&copy; 2021 - My App.</p>
     </div>
 </footer>
 

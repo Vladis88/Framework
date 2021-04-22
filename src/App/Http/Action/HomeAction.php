@@ -23,7 +23,7 @@ class HomeAction
     {
         $name = $request->getQueryParams()['name'] ?? 'Guest';
 
-        return new HtmlResponse($this->view->render('home', [
+        return new HtmlResponse($this->view->render('app/home', [
             'name' => $name
         ]));
     }

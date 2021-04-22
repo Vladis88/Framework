@@ -16,7 +16,7 @@ class AboutAction
 
     public function __invoke(): HtmlResponse
     {
-        return new HtmlResponse($this->template->render('about'));
+        return new HtmlResponse($this->template->render('app/about'));
     }
 
 }
