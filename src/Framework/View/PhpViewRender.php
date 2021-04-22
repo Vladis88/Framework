@@ -6,8 +6,8 @@ class PhpViewRender
 {
     private $path;
     private $extend;
-    private $params = [];
-    private $blocks = [];
+    private array $blocks = [];
+    private \SplStack $blockNames;
 
     /**
      * ViewRender constructor.
@@ -16,6 +16,7 @@ class PhpViewRender
     public function __construct($path)
     {
         $this->path = $path;
+        $this->blockNames = new \SplStack();
     }
 
     public function render($view, array $params = []): string
@@ -41,13 +42,15 @@ class PhpViewRender
         $this->extend = $view;
     }
 
-    public function startBlock()
+    public function startBlock(string $string)
     {
+        $this->blockNames->push($string);
         ob_start();
     }
 
-    public function endBlock(string $string)
+    public function endBlock()
     {
+        $string = $this->blockNames->pop();
         $this->blocks[$string] = ob_get_clean();
     }
 
