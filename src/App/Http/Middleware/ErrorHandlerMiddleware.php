@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use Framework\View\PhpViewRender;
+use Framework\View\Php\PhpViewRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -14,7 +14,7 @@ class ErrorHandlerMiddleware
     /**
      * ErrorHandlerMiddleware constructor.
      * @param bool $debug
-     * @param \Framework\View\PhpViewRender $template
+     * @param \Framework\View\Php\PhpViewRender $template
      */
     public function __construct(bool $debug, PhpViewRender $template)
     {

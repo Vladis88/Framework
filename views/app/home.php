@@ -1,6 +1,6 @@
 <?php
 /** @var string $name */
-/** @var \Framework\View\PhpViewRender $this */
+/** @var \Framework\View\Php\PhpViewRender $this */
 
 $this->extend('layout/default');
 ?>

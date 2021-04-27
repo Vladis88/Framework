@@ -3,7 +3,7 @@
 namespace App\Http\Action;
 
 use App\Http\Middleware\BasicAuthMiddleware;
-use Framework\View\PhpViewRender;
+use Framework\View\Php\PhpViewRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 

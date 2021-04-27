@@ -3,8 +3,7 @@
 namespace App\Http\Action\Blog;
 
 use App\ReadModel\PostReadRepository;
-use Framework\View\PhpViewRender;
-use http\Exception\RuntimeException;
+use Framework\View\Php\PhpViewRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -16,7 +15,7 @@ class ShowAction
     /**
      * ShowAction constructor.
      * @param \App\ReadModel\PostReadRepository $posts
-     * @param \Framework\View\PhpViewRender $template
+     * @param \Framework\View\Php\PhpViewRender $template
      */
     public function __construct(PostReadRepository $posts, PhpViewRender $template)
     {
@@ -28,7 +27,6 @@ class ShowAction
     public function __invoke(ServerRequestInterface $request, callable $next)
     {
 
-        throw  new RuntimeException("123");
         if (!$post = $this->posts->find($request->getAttribute('id'))) {
             return $next($request);
         }

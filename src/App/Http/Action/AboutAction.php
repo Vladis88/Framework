@@ -2,7 +2,7 @@
 
 namespace App\Http\Action;
 
-use Framework\View\PhpViewRender;
+use Framework\View\Php\PhpViewRender;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class AboutAction

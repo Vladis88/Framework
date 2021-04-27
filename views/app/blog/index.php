@@ -1,10 +1,10 @@
 <?php
 
-/** @var \Framework\View\PhpViewRender $this */
+/** @var \Framework\View\Php\PhpViewRender $this */
 $this->extend('layout/default');
 ?>
 
-<?php $this->startBlock('title'); ?> Blog <?php $this->endBlock(); ?>
+<?php $this->startBlock('title'); ?>Blog<?php $this->endBlock(); ?>
 
 <?php $this->startBlock('meta'); ?>
 <meta name="description" content="Blog description"/>

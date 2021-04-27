@@ -8,7 +8,8 @@ use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
-use Framework\View\PhpViewRender;
+use Framework\View\Php\Extension\RouteExtension;
+use Framework\View\Php\PhpViewRender;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -42,7 +43,9 @@ return [
                     $container->get(PhpViewRender::class));
             },
             PhpViewRender::class => function (ContainerInterface $container) {
-                return new PhpViewRender('views', $container->get(Router::class));
+                $render = new PhpViewRender('views');
+                $render->addExtension($container->get(RouteExtension::class));
+                return $render;
             },
         ],
     ],

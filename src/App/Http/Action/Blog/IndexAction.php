@@ -3,7 +3,7 @@
 namespace App\Http\Action\Blog;
 
 use App\ReadModel\PostReadRepository;
-use Framework\View\PhpViewRender;
+use Framework\View\Php\PhpViewRender;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class IndexAction
@@ -14,7 +14,7 @@ class IndexAction
     /**
      * IndexAction constructor.
      * @param \App\ReadModel\PostReadRepository $posts
-     * @param \Framework\View\PhpViewRender $template
+     * @param \Framework\View\Php\PhpViewRender $template
      */
     public function __construct(PostReadRepository $posts, PhpViewRender $template)
     {

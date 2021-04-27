@@ -1,8 +1,7 @@
 <?php
 
-namespace Framework\View;
+namespace Framework\View\Php;
 
-use Framework\Http\Router\Router;
 
 class PhpViewRender
 {
@@ -10,33 +9,43 @@ class PhpViewRender
     private $extend;
     private array $blocks = [];
     private \SplStack $blockNames;
-    private Router $router;
+    private array $extensions = [];
 
     /**
      * ViewRender constructor.
      * @param $path
-     * @param \Framework\Http\Router\Router $router
      */
-    public function __construct($path, Router  $router)
+    public function __construct($path)
     {
         $this->path = $path;
         $this->blockNames = new \SplStack();
-        $this->router = $router;
+    }
+
+    public function addExtension(Extension $extension): void
+    {
+        $this->extensions[] = $extension;
     }
 
     public function render($view, array $params = []): string
     {
-        $viewFile = $this->path . '/' . $view . '.php';
-        ob_start();
-        extract($params, EXTR_OVERWRITE);
-        $this->extend = null;
-        require $viewFile;
-        $content = ob_get_clean();
+        $level = ob_get_level();
+        try {
+            $viewFile = $this->path . '/' . $view . '.php';
+            ob_start();
+            extract($params, EXTR_OVERWRITE);
+            $this->extend = null;
+            require $viewFile;
+            $content = ob_get_clean();
 
-        if (!$this->extend) {
-            return $content;
+            if (!$this->extend) {
+                return $content;
+            }
+        } catch (\Throwable | \Exception $e) {
+            while (ob_get_level() > $level) {
+                ob_end_clean();
+            }
+            throw $e;
         }
-
         return $this->render($this->extend);
     }
 
@@ -97,9 +106,20 @@ class PhpViewRender
         return htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE);
     }
 
-    public function path(string $string, array $params = []): string
+    public function __call($name, $arguments)
     {
-        return $this->router->generate($string, $params);
+        foreach ($this->extensions as $extension) {
+            $functions = $extension->getFunctions();
+            foreach ($functions as $function) {
+                if ($function->name === $name) {
+                    if ($function->needRenderer) {
+                        return ($function->callback)($this, ...$arguments);
+                    }
+                    return ($function->callback)(...$arguments);
+                }
+            }
+        }
+        throw new \InvalidArgumentException('Undefined function "' . $name . '"');
     }
 
 }
