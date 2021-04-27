@@ -8,8 +8,7 @@ use Framework\Http\Application;
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
-use Framework\View\Php\Extension\RouteExtension;
-use Framework\View\Php\PhpViewRender;
+use Framework\View\Twig\TwigRender;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -34,18 +33,11 @@ return [
             MiddlewareResolver::class => function (ContainerInterface $container) {
                 return new MiddlewareResolver($container);
             },
-            BasicAuthMiddleware::class => function (ContainerInterface $container) {
-                return new BasicAuthMiddleware($container->get('config')['users']);
-            },
             ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
                 return new ErrorHandlerMiddleware(
                     $container->get('config')['debug'],
-                    $container->get(PhpViewRender::class));
-            },
-            PhpViewRender::class => function (ContainerInterface $container) {
-                $render = new PhpViewRender('views');
-                $render->addExtension($container->get(RouteExtension::class));
-                return $render;
+                    $container->get(TwigRender::class)
+                );
             },
         ],
     ],

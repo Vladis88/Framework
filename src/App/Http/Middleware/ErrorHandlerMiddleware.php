@@ -2,26 +2,31 @@
 
 namespace App\Http\Middleware;
 
-use Framework\View\Php\PhpViewRender;
+use Framework\View\Twig\TwigRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class ErrorHandlerMiddleware
 {
     private bool $debug;
-    private PhpViewRender $template;
+    private TwigRender $template;
 
     /**
      * ErrorHandlerMiddleware constructor.
      * @param bool $debug
-     * @param \Framework\View\Php\PhpViewRender $template
+     * @param \Framework\View\Twig\TwigRender $template
      */
-    public function __construct(bool $debug, PhpViewRender $template)
+    public function __construct(bool $debug, TwigRender $template)
     {
         $this->debug = $debug;
         $this->template = $template;
     }
 
+    /**
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
+     */
     public function __invoke(ServerRequestInterface $request, callable $next)
     {
         try {

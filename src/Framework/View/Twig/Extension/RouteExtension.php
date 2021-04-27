@@ -1,15 +1,12 @@
 <?php
 
-
-namespace Framework\View\Php\Extension;
-
+namespace Framework\View\Twig\Extension;
 
 use Framework\Http\Router\Router;
-use Framework\View\Php\Extension;
-use Framework\View\Php\PhpViewRender;
-use Framework\View\Php\SimpleFunction;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-class RouteExtension extends Extension
+class RouteExtension extends AbstractExtension
 {
     private Router $router;
 
@@ -22,13 +19,10 @@ class RouteExtension extends Extension
         $this->router = $router;
     }
 
-    /**
-     * @return SimpleFunction[][]
-     */
     public function getFunctions(): array
     {
         return [
-            new SimpleFunction('path', [$this, 'generatePath']),
+            new TwigFunction('path', [$this, 'generatePath'])
         ];
     }
 
@@ -36,5 +30,6 @@ class RouteExtension extends Extension
     {
         return $this->router->generate($name, $params);
     }
+
 
 }

@@ -3,25 +3,30 @@
 namespace App\Http\Action\Blog;
 
 use App\ReadModel\PostReadRepository;
-use Framework\View\Php\PhpViewRender;
+use Framework\View\Twig\TwigRender;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class IndexAction
 {
     private PostReadRepository $posts;
-    private PhpViewRender $template;
+    private TwigRender $template;
 
     /**
      * IndexAction constructor.
      * @param \App\ReadModel\PostReadRepository $posts
-     * @param \Framework\View\Php\PhpViewRender $template
+     * @param \Framework\View\Twig\TwigRender $template
      */
-    public function __construct(PostReadRepository $posts, PhpViewRender $template)
+    public function __construct(PostReadRepository $posts, TwigRender $template)
     {
         $this->posts = $posts;
         $this->template = $template;
     }
 
+    /**
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\LoaderError
+     */
     public function __invoke(): HtmlResponse
     {
         $allPost = $this->posts->getAll();

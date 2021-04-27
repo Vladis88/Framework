@@ -2,23 +2,28 @@
 
 namespace App\Http\Action;
 
-use Framework\View\Php\PhpViewRender;
+use Framework\View\Twig\TwigRender;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 class HomeAction
 {
-    private PhpViewRender $view;
+    private TwigRender $view;
 
     /**
      * HomeAction constructor.
-     * @param PhpViewRender $view
+     * @param TwigRender $view
      */
-    public function __construct(PhpViewRender $view)
+    public function __construct(TwigRender $view)
     {
         $this->view = $view;
     }
 
+    /**
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\LoaderError
+     */
     public function __invoke(ServerRequestInterface $request): HtmlResponse
     {
         $name = $request->getQueryParams()['name'] ?? 'Guest';

@@ -1,15 +1,11 @@
-<?php
-/** @var string $name */
-/** @var \Framework\View\Php\PhpViewRender $this */
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title><?= $this->renderBlock('title') ?>-App</title>
+    <title>{% block title %}{% endblock %}-App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <?= $this->renderBlock('meta'); ?>
+    {% block meta %}{% endblock %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <style>
         body {
@@ -41,17 +37,17 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand" href="{{ path('home') }}">
                     Home
                 </a>
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="<?= $this->encode($this->path('blog')) ?>"><i class="glyphicon glyphicon-th-list"></i>
+                    <li><a href="{{ path('blog') }}"><i class="glyphicon glyphicon-th-list"></i>
                             Blog</a>
-                    <li><a href="<?= $this->encode($this->path('about')) ?>"><i class="glyphicon glyphicon-book"></i>
+                    <li><a href="{{ path('about') }}"><i class="glyphicon glyphicon-book"></i>
                             About</a></li>
-                    <li><a href="<?= $this->encode($this->path('cabinet')) ?>"><i class="glyphicon glyphicon-user"></i>
+                    <li><a href="{{ path('cabinet') }}"><i class="glyphicon glyphicon-user"></i>
                             Cabinet</a>
                     </li>
                 </ul>
@@ -62,8 +58,8 @@
 
 <div class="app-content">
     <main class="container">
-        <?= $this->renderBlock('breadcrumbs') ?>
-        <?= $this->renderBlock('content') ?>
+        {% block breadcrumbs %}{% endblock %}
+        {% block content %}{% endblock %}
     </main>
 </div>
 
