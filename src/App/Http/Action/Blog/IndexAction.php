@@ -2,15 +2,32 @@
 
 namespace App\Http\Action\Blog;
 
-use Zend\Diactoros\Response\JsonResponse;
+use App\ReadModel\PostReadRepository;
+use Framework\View\PhpViewRender;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class IndexAction
 {
-    public function __invoke(): JsonResponse
+    private PostReadRepository $posts;
+    private PhpViewRender $template;
+
+    /**
+     * IndexAction constructor.
+     * @param \App\ReadModel\PostReadRepository $posts
+     * @param \Framework\View\PhpViewRender $template
+     */
+    public function __construct(PostReadRepository $posts, PhpViewRender $template)
     {
-        return new JsonResponse([
-            ['id' => 2, 'title' => 'The Second Post'],
-            ['id' => 1, 'title' => 'The First Post'],
-        ]);
+        $this->posts = $posts;
+        $this->template = $template;
+    }
+
+    public function __invoke(): HtmlResponse
+    {
+        $allPost = $this->posts->getAll();
+
+        return new HtmlResponse($this->template->render('app/blog/index', [
+            'posts' => $allPost,
+        ]));
     }
 }

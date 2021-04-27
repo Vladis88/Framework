@@ -9,7 +9,6 @@ use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
 use Framework\View\PhpViewRender;
-use Framework\View\Render;
 use Interop\Container\ContainerInterface;
 use Zend\Diactoros\Response;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
@@ -24,7 +23,7 @@ return [
                 return new Application(
                     $container->get(MiddlewareResolver::class),
                     $container->get(Router::class),
-                    new NotFoundHandler(),
+                    $container->get(NotFoundHandler::class),
                     new Response()
                 );
             },
@@ -38,10 +37,12 @@ return [
                 return new BasicAuthMiddleware($container->get('config')['users']);
             },
             ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
-                return new ErrorHandlerMiddleware($container->get('config')['debug']);
+                return new ErrorHandlerMiddleware(
+                    $container->get('config')['debug'],
+                    $container->get(PhpViewRender::class));
             },
-            PhpViewRender::class => function () {
-                return new PhpViewRender('views');
+            PhpViewRender::class => function (ContainerInterface $container) {
+                return new PhpViewRender('views', $container->get(Router::class));
             },
         ],
     ],

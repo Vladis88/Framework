@@ -9,7 +9,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <title><?= $this->renderBlock('title') ?>-App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <?= $this->renderBlock('mete'); ?>
+    <?= $this->renderBlock('meta'); ?>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
     <style>
         body {
@@ -47,8 +47,13 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="/about"><i class="glyphicon glyphicon-book"></i> About</a></li>
-                    <li><a href="/cabinet"><i class="glyphicon glyphicon-user"></i> Cabinet</a></li>
+                    <li><a href="<?= $this->encode($this->path('blog')) ?>"><i class="glyphicon glyphicon-th-list"></i>
+                            Blog</a>
+                    <li><a href="<?= $this->encode($this->path('about')) ?>"><i class="glyphicon glyphicon-book"></i>
+                            About</a></li>
+                    <li><a href="<?= $this->encode($this->path('cabinet')) ?>"><i class="glyphicon glyphicon-user"></i>
+                            Cabinet</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -58,7 +63,7 @@
 <div class="app-content">
     <main class="container">
         <?= $this->renderBlock('breadcrumbs') ?>
-        <?= $content ?>
+        <?= $this->renderBlock('content') ?>
     </main>
 </div>
 

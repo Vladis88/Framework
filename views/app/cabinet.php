@@ -8,9 +8,13 @@ $this->extend('layout/columns');
 
 <?php $this->startBlock('breadcrumbs'); ?>
 <ul class="breadcrumb">
-    <li><a href="/">Home</a></li>
+    <li><a href="<?= $this->encode($this->path('home')) ?>">Home</a></li>
     <li class="active">Cabinet</li>
 </ul>
+<?php $this->endBlock(); ?>
+
+<?php $this->startBlock('main'); ?>
+<h1>Cabinet of <?= $this->encode($name) ?></h1>
 <?php $this->endBlock(); ?>
 
 <?php $this->startBlock('sidebar'); ?>
@@ -21,5 +25,3 @@ $this->extend('layout/columns');
     </div>
 </div>
 <?php $this->endBlock(); ?>
-
-<h1>Cabinet of <?= htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE) ?></h1>

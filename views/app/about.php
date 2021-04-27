@@ -2,12 +2,12 @@
 /** @var string $name */
 /** @var \Framework\View\PhpViewRender $this */
 
-$this->extend('layout/default');
+$this->extend('layout/columns');
 ?>
 
 <?php $this->startBlock('title') ?>About<?php $this->endBlock(); ?>
 
-<?php $this->startBlock('mete'); ?>
+<?php $this->startBlock('meta'); ?>
 <meta name="description" content="About Page description"/>
 <?php $this->endBlock(); ?>
 
@@ -17,4 +17,8 @@ $this->extend('layout/default');
     <li class="active">About</li>
 </ul>
 <?php $this->endBlock(); ?>
+
+<?php $this->startBlock('main'); ?>
 <h1>About the site</h1>
+<?php $this->endBlock(); ?>
+

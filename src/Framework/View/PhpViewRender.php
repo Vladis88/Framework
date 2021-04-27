@@ -2,21 +2,26 @@
 
 namespace Framework\View;
 
+use Framework\Http\Router\Router;
+
 class PhpViewRender
 {
     private $path;
     private $extend;
     private array $blocks = [];
     private \SplStack $blockNames;
+    private Router $router;
 
     /**
      * ViewRender constructor.
      * @param $path
+     * @param \Framework\Http\Router\Router $router
      */
-    public function __construct($path)
+    public function __construct($path, Router  $router)
     {
         $this->path = $path;
         $this->blockNames = new \SplStack();
+        $this->router = $router;
     }
 
     public function render($view, array $params = []): string
@@ -32,9 +37,7 @@ class PhpViewRender
             return $content;
         }
 
-        return $this->render($this->extend, [
-            'content' => $content,
-        ]);
+        return $this->render($this->extend);
     }
 
     public function extend($view): void
@@ -50,13 +53,53 @@ class PhpViewRender
 
     public function endBlock()
     {
+        $content = ob_get_clean();
         $string = $this->blockNames->pop();
-        $this->blocks[$string] = ob_get_clean();
+        if ($this->hasBlock($string)) {
+            return;
+        }
+        $this->blocks[$string] = $content;
     }
 
     public function renderBlock(string $string)
     {
-        return $this->blocks[$string] ?? '';
+        $block = $this->blocks[$string] ?? '';
+        if ($block instanceof \Closure) {
+            return $block();
+        }
+        return $block ?? '';
+    }
+
+    public function hasBlock(string $string): bool
+    {
+        return array_key_exists($string, $this->blocks);
+    }
+
+    public function ensureBlock(string $string): bool
+    {
+        if ($this->hasBlock($string)) {
+            return false;
+        }
+        $this->startBlock($string);
+        return true;
+    }
+
+    public function block(string $string, $content)
+    {
+        if ($this->hasBlock($string)) {
+            return;
+        }
+        $this->blocks[$string] = $content;
+    }
+
+    public function encode(string $name): string
+    {
+        return htmlspecialchars($name, ENT_QUOTES | ENT_SUBSTITUTE);
+    }
+
+    public function path(string $string, array $params = []): string
+    {
+        return $this->router->generate($string, $params);
     }
 
 }

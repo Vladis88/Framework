@@ -2,17 +2,39 @@
 
 namespace App\Http\Action\Blog;
 
+use App\ReadModel\PostReadRepository;
+use Framework\View\PhpViewRender;
+use http\Exception\RuntimeException;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Zend\Diactoros\Response\HtmlResponse;
 
 class ShowAction
 {
+    private PostReadRepository $posts;
+    private PhpViewRender $template;
+
+    /**
+     * ShowAction constructor.
+     * @param \App\ReadModel\PostReadRepository $posts
+     * @param \Framework\View\PhpViewRender $template
+     */
+    public function __construct(PostReadRepository $posts, PhpViewRender $template)
+    {
+        $this->posts = $posts;
+        $this->template = $template;
+    }
+
+
     public function __invoke(ServerRequestInterface $request, callable $next)
     {
-        $id = $request->getAttribute('id');
-        if ($id > 3) {
+
+        throw  new RuntimeException("123");
+        if (!$post = $this->posts->find($request->getAttribute('id'))) {
             return $next($request);
         }
-        return new JsonResponse(['id' => $id, 'title' => 'Post #' . $id]);
+
+        return new HtmlResponse($this->template->render('app/blog/show', [
+            'post' => $post,
+        ]));
     }
 }
