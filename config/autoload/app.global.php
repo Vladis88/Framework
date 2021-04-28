@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Middleware\ErrorHandlerMiddleware;
+use App\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
+use App\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
+use App\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
 use App\Http\Middleware\NotFoundHandler;
 use Aura\Router\RouterContainer;
 use Framework\Http\Application;
@@ -34,10 +36,15 @@ return [
             },
             ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
                 return new ErrorHandlerMiddleware(
+                    $container->get(ErrorResponseGenerator::class)
+                );
+            },
+            ErrorResponseGenerator::class => function (ContainerInterface $container) {
+                return new HtmlErrorResponseGenerator(
                     $container->get('config')['debug'],
                     $container->get(TwigRender::class)
                 );
-            },
+            }
         ],
     ],
 

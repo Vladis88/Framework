@@ -28,11 +28,6 @@ class MiddlewareResolver
         $this->responsePrototype = $responsePrototype;
     }
 
-
-    /**
-     * @param $handler
-     * @return \Psr\Http\Server\MiddlewareInterface
-     */
     public function resolve($handler): MiddlewareInterface
     {
         if (\is_array($handler)) {
@@ -62,7 +57,7 @@ class MiddlewareResolver
             }
         }
 
-        return new UnknownMiddlewareTypeException($handler);
+        throw new UnknownMiddlewareTypeException($handler);
     }
 
     private function createPipe(array $handlers): MiddlewarePipe
