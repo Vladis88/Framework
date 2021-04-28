@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\BasicAuthMiddleware;
 use App\Http\Middleware\ErrorHandlerMiddleware;
 use App\Http\Middleware\NotFoundHandler;
 use Aura\Router\RouterContainer;
@@ -31,7 +30,7 @@ return [
                 return new AuraRouterAdapter(new RouterContainer());
             },
             MiddlewareResolver::class => function (ContainerInterface $container) {
-                return new MiddlewareResolver($container);
+                return new MiddlewareResolver($container, new Response());
             },
             ErrorHandlerMiddleware::class => function (ContainerInterface $container) {
                 return new ErrorHandlerMiddleware(

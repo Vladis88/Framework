@@ -18,7 +18,7 @@ require 'config/routes.php';
 
 //Running
 $request = ServerRequestFactory::fromGlobals();
-$response = $app->run($request, new Response());
+$response = $app->handle($request);
 
 //Sending
 $emitter = new SapiEmitter();

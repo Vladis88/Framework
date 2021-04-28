@@ -1,51 +1,52 @@
 <?php
 
-
 namespace Framework\Http;
-
 
 use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\RouteData;
 use Framework\Http\Router\Router;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Stratigility\Middleware\PathMiddlewareDecorator;
 use Zend\Stratigility\MiddlewarePipe;
 
-class Application extends MiddlewarePipe
+class Application implements MiddlewareInterface, RequestHandlerInterface
 {
     private MiddlewareResolver $resolver;
-    private $default;
+    private RequestHandlerInterface $default;
     private Router $router;
+    private ResponseInterface $responsePrototype;
+    private MiddlewarePipe $pipeline;
 
     /**
      * Application constructor.
      * @param \Framework\Http\Pipeline\MiddlewareResolver $resolver
      * @param \Framework\Http\Router\Router $router
-     * @param callable $default
+     * @param \Psr\Http\Server\RequestHandlerInterface $default
      * @param \Psr\Http\Message\ResponseInterface $responsePrototype
      */
-    public function __construct(MiddlewareResolver $resolver, Router $router, callable $default, ResponseInterface $responsePrototype)
+    public function __construct(
+        MiddlewareResolver $resolver,
+        Router $router,
+        RequestHandlerInterface $default,
+        ResponseInterface $responsePrototype)
     {
-        parent::__construct();
         $this->resolver = $resolver;
-        $this->setResponsePrototype($responsePrototype);
-        $this->default = $default;
         $this->router = $router;
+        $this->pipeline = new MiddlewarePipe();
+        $this->default = $default;
+        $this->responsePrototype = $responsePrototype;
     }
 
-    public function pipe($path, $middleware = null): MiddlewarePipe
+    public function pipe($path, $middleware = null): void
     {
         if ($middleware === null) {
-            return parent::pipe($this->resolver->resolve($path, $this->responsePrototype));
+            $this->pipeline->pipe($this->resolver->resolve($path));
+        } else {
+            $this->pipeline->pipe(new PathMiddlewareDecorator($path, $this->resolver->resolve($middleware)));
         }
-        return parent::pipe($path, $this->resolver->resolve($middleware, $this->responsePrototype));
-
-    }
-
-
-    public function run(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
-    {
-        return $this($request, $response, $this->default);
     }
 
     public function route($name, $path, $handler, array $methods, array $option = []): void
@@ -68,5 +69,28 @@ class Application extends MiddlewarePipe
         $this->route($name, $path, $handler, ['POST'], $option);
     }
 
+    public function put($name, $path, $handler, array $option = []): void
+    {
+        $this->route($name, $path, $handler, ['PUT'], $option);
+    }
 
+    public function patch($name, $path, $handler, array $option = []): void
+    {
+        $this->route($name, $path, $handler, ['PATCH'], $option);
+    }
+
+    public function delete($name, $path, $handler, array $option = []): void
+    {
+        $this->route($name, $path, $handler, ['DELETE'], $option);
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->pipeline->process($request, $this->default);
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        return $this->pipeline->process($request, $handler);
+    }
 }

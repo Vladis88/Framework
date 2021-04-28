@@ -3,10 +3,12 @@
 namespace App\Http\Middleware;
 
 use Framework\View\Twig\TwigRender;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class NotFoundHandler
+class NotFoundHandler implements RequestHandlerInterface
 {
     private TwigRender $template;
 
@@ -24,7 +26,7 @@ class NotFoundHandler
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\LoaderError
      */
-    public function __invoke(ServerRequestInterface $request): HtmlResponse
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse($this->template->render('error/404', [
             'request' => $request,

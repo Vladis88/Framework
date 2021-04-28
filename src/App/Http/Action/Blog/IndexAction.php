@@ -4,9 +4,12 @@ namespace App\Http\Action\Blog;
 
 use App\ReadModel\PostReadRepository;
 use Framework\View\Twig\TwigRender;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class IndexAction
+class IndexAction implements RequestHandlerInterface
 {
     private PostReadRepository $posts;
     private TwigRender $template;
@@ -27,7 +30,7 @@ class IndexAction
      * @throws \Twig\Error\SyntaxError
      * @throws \Twig\Error\LoaderError
      */
-    public function __invoke(): HtmlResponse
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $allPost = $this->posts->getAll();
 

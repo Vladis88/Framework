@@ -4,10 +4,13 @@ namespace App\Http\Action\Blog;
 
 use App\ReadModel\PostReadRepository;
 use Framework\View\Twig\TwigRender;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class ShowAction
+class ShowAction implements MiddlewareInterface
 {
     private PostReadRepository $posts;
     private TwigRender $template;
@@ -29,11 +32,11 @@ class ShowAction
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\LoaderError
      */
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
         if (!$post = $this->posts->find($request->getAttribute('id'))) {
-            return $next($request);
+            return $handler->handle($request);
         }
 
         return new HtmlResponse($this->template->render('app/blog/show', [

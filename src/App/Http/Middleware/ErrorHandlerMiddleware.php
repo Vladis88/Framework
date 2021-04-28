@@ -3,19 +3,17 @@
 namespace App\Http\Middleware;
 
 use Framework\View\Twig\TwigRender;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class ErrorHandlerMiddleware
+class ErrorHandlerMiddleware implements MiddlewareInterface
 {
     private bool $debug;
     private TwigRender $template;
 
-    /**
-     * ErrorHandlerMiddleware constructor.
-     * @param bool $debug
-     * @param \Framework\View\Twig\TwigRender $template
-     */
     public function __construct(bool $debug, TwigRender $template)
     {
         $this->debug = $debug;
@@ -23,16 +21,16 @@ class ErrorHandlerMiddleware
     }
 
     /**
-     * @throws \Twig\Error\SyntaxError
      * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \Twig\Error\LoaderError
      */
-    public function __invoke(ServerRequestInterface $request, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            return $next($request);
+            return $handler->handle($request);
         } catch (\Throwable $e) {
-            $view = $this->debug ? 'error/error_debug' : 'error/error';
+            $view = $this->debug ? 'error/error-debug' : 'error/error';
             return new HtmlResponse($this->template->render($view, [
                 'request' => $request,
                 'exception' => $e,

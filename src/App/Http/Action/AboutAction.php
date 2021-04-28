@@ -3,9 +3,12 @@
 namespace App\Http\Action;
 
 use Framework\View\Twig\TwigRender;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class AboutAction
+class AboutAction implements RequestHandlerInterface
 {
     private TwigRender $template;
 
@@ -19,7 +22,7 @@ class AboutAction
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\LoaderError
      */
-    public function __invoke(): HtmlResponse
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return new HtmlResponse($this->template->render('app/about'));
     }

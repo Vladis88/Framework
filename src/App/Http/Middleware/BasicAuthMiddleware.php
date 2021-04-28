@@ -4,26 +4,30 @@ namespace App\Http\Middleware;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\EmptyResponse;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class BasicAuthMiddleware
+class BasicAuthMiddleware implements MiddlewareInterface
 {
     public const ATTRIBUTE = '_user';
     /**
      * @var array
      */
     private array $users;
+    private ResponseInterface $responsePrototype;
 
     /**
      * BasicAuthActionDecorator constructor.
      * @param array $users
+     * @param \Psr\Http\Message\ResponseInterface $responsePrototype
      */
-    public function __construct(array $users)
+    public function __construct(array $users, ResponseInterface $responsePrototype)
     {
         $this->users = $users;
+        $this->responsePrototype = $responsePrototype;
     }
 
-    public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $username = $request->getServerParams()['PHP_AUTH_USER'] ?? null;
         $password = $request->getServerParams()['PHP_AUTH_PW'] ?? null;
@@ -31,12 +35,11 @@ class BasicAuthMiddleware
         if (!empty($username) && !empty($password)) {
             foreach ($this->users as $name => $pass) {
                 if ($username === $name && $password === $pass) {
-                    return $next($request->withAttribute(self::ATTRIBUTE, $username));
+                    return $handler->handle($request->withAttribute(self::ATTRIBUTE, $username));
                 }
             }
         }
-
-        return $response->withStatus(401)->withHeader('WWW-Authenticate', 'Basic realm=Restricted area');
+        return $this->responsePrototype->withStatus(401)->withHeader('WWW-Authenticate', 'Basic realm=Restricted area');
     }
 
 
