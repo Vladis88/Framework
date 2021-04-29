@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Middleware\ErrorHandler\DebugErrorResponseGenerator;
-use App\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
-use App\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
-use App\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
-use App\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
+use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
+use Infrastructure\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
+use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use App\Http\Middleware\NotFoundHandler;
 use Aura\Router\RouterContainer;
 use Framework\Http\Application;

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Middleware\ErrorHandler;
+namespace Infrastructure\Http\Middleware\ErrorHandler;
 
+use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use Framework\View\Twig\TwigRender;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Stratigility\Utils;
 
 class HtmlErrorResponseGenerator implements ErrorResponseGenerator
