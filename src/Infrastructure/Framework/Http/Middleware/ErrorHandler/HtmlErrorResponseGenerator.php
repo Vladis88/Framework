@@ -1,6 +1,6 @@
 <?php
 
-namespace Infrastructure\Http\Middleware\ErrorHandler;
+namespace Infrastructure\Framework\Http\Middleware\ErrorHandler;
 
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use Framework\View\Twig\TwigRender;

@@ -2,7 +2,6 @@
 
 use Framework\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
 use Framework\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
-use Infrastructure\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
 use Framework\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use App\Http\Middleware\NotFoundHandler;
 use Aura\Router\RouterContainer;
@@ -11,6 +10,7 @@ use Framework\Http\Pipeline\MiddlewareResolver;
 use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
 use Framework\View\Twig\TwigRender;
+use Infrastructure\Framework\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
 use Interop\Container\ContainerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
