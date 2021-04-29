@@ -9,5 +9,5 @@ use Psr\Http\Message\ServerRequestInterface;
 
 interface ErrorResponseGenerator
 {
-    public function generate(ServerRequestInterface $request, \Throwable $e): ResponseInterface;
+    public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface;
 }

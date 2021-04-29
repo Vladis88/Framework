@@ -5,17 +5,21 @@ namespace App\Http\Middleware\ErrorHandler;
 use Framework\View\Twig\TwigRender;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Stratigility\Utils;
 
 class HtmlErrorResponseGenerator implements ErrorResponseGenerator
 {
-    private bool $debug;
     private TwigRender $template;
+    private array $views;
+    private ResponseInterface $response;
 
-    public function __construct(bool $debug, TwigRender $template)
+    public function __construct(TwigRender $template, ResponseInterface $response, array $views)
     {
-        $this->debug = $debug;
         $this->template = $template;
+        $this->views = $views;
+        $this->response = $response;
     }
 
     /**
@@ -23,21 +27,26 @@ class HtmlErrorResponseGenerator implements ErrorResponseGenerator
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\LoaderError
      */
-    public function generate(ServerRequestInterface $request, \Throwable $e): ResponseInterface
+    public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
-        $view = $this->debug ? 'error/error-debug' : 'error/error';
-        return new HtmlResponse($this->template->render($view, [
-            'request' => $request,
-            'exception' => $e,
-        ]), self::getStatusCode($e));
+        $code = Utils::getStatusCode($e, $this->response);
+
+        $responseResult = $this->response->withStatus($code);
+        $responseResult->getBody()->write($this->template->render($this->getView($code), [
+                'request' => $request,
+                'exception' => $e,
+            ]));
+
+        return $responseResult;
     }
 
-    private static function getStatusCode(\Throwable $e): int
+    private function getView(int $code)
     {
-        $code = $e->getCode();
-        if ($code >= 400 && $code < 600) {
-            return $code;
+        if (array_key_exists($code, $this->views)) {
+            $view = $this->views[$code];
+        } else {
+            $view = $this->views['error'];
         }
-        return 500;
+        return $view;
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ErrorHandler\DebugErrorResponseGenerator;
 use App\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
 use App\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use App\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
@@ -24,8 +25,7 @@ return [
                 return new Application(
                     $container->get(MiddlewareResolver::class),
                     $container->get(Router::class),
-                    $container->get(NotFoundHandler::class),
-                    new Response()
+                    $container->get(NotFoundHandler::class)
                 );
             },
             Router::class => function () {
@@ -40,11 +40,21 @@ return [
                 );
             },
             ErrorResponseGenerator::class => function (ContainerInterface $container) {
-                return new HtmlErrorResponseGenerator(
-                    $container->get('config')['debug'],
-                    $container->get(TwigRender::class)
+                if ($container->get('config')['debug']) {
+                    return new DebugErrorResponseGenerator($container->get(TwigRender::class),
+                        new Response(),
+                        'error/error-debug'
+                    );
+                }
+                return new HtmlErrorResponseGenerator($container->get(TwigRender::class),
+                    new Response(),
+                    [
+                        '403' => 'error/403',
+                        '404' => 'error/404',
+                        'error' => 'error/error',
+                    ]
                 );
-            }
+            },
         ],
     ],
 
