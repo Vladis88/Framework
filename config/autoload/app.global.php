@@ -4,6 +4,7 @@ use App\Http\Middleware\ErrorHandler\DebugErrorResponseGenerator;
 use App\Http\Middleware\ErrorHandler\ErrorHandlerMiddleware;
 use App\Http\Middleware\ErrorHandler\ErrorResponseGenerator;
 use App\Http\Middleware\ErrorHandler\HtmlErrorResponseGenerator;
+use App\Http\Middleware\ErrorHandler\WhoopsErrorResponseGenerator;
 use App\Http\Middleware\NotFoundHandler;
 use Aura\Router\RouterContainer;
 use Framework\Http\Application;
@@ -12,6 +13,9 @@ use Framework\Http\Router\AuraRouterAdapter;
 use Framework\Http\Router\Router;
 use Framework\View\Twig\TwigRender;
 use Interop\Container\ContainerInterface;
+use Whoops\Handler\PrettyPageHandler;
+use Whoops\Run;
+use Whoops\RunInterface;
 use Zend\Diactoros\Response;
 use Zend\ServiceManager\AbstractFactory\ReflectionBasedAbstractFactory;
 
@@ -41,9 +45,8 @@ return [
             },
             ErrorResponseGenerator::class => function (ContainerInterface $container) {
                 if ($container->get('config')['debug']) {
-                    return new DebugErrorResponseGenerator($container->get(TwigRender::class),
+                    return new WhoopsErrorResponseGenerator($container->get(RunInterface::class),
                         new Response(),
-                        'error/error-debug'
                     );
                 }
                 return new HtmlErrorResponseGenerator($container->get(TwigRender::class),
@@ -54,6 +57,14 @@ return [
                         'error' => 'error/error',
                     ]
                 );
+            },
+            RunInterface::class => function () {
+                $whoops = new Run();
+                $whoops->writeToOutput(false);
+                $whoops->allowQuit(false);
+                $whoops->pushHandler(new PrettyPageHandler());
+                $whoops->register();
+                return $whoops;
             },
         ],
     ],

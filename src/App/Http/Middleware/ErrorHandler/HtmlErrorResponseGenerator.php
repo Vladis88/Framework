@@ -30,8 +30,8 @@ class HtmlErrorResponseGenerator implements ErrorResponseGenerator
     public function generate(\Throwable $e, ServerRequestInterface $request): ResponseInterface
     {
         $code = Utils::getStatusCode($e, $this->response);
-
         $responseResult = $this->response->withStatus($code);
+
         $responseResult->getBody()->write($this->template->render($this->getView($code), [
                 'request' => $request,
                 'exception' => $e,

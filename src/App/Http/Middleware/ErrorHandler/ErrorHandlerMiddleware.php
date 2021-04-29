@@ -30,7 +30,7 @@ class ErrorHandlerMiddleware implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (\Throwable $e) {
-            return $this->generator->generate($request, $e);
+            return $this->generator->generate($e, $request);
         }
     }
 
